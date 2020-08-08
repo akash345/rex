@@ -1,0 +1,80 @@
+@font-face {
+    font-family: 'Quicksand';
+    src: url("~get-caller-file");
+    font-weight:bold;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+.button {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px;
+    background-color: #9AECED;
+    font-family: rexFont;
+    font-size: larger;
+    color: #282c34;
+
+}
+
+.button2 {
+    display: block;
+    margin: 30px auto;
+    padding: 5px;
+    background-color: #9AECED;
+    font-family: rexFont;
+    font-size: larger;
+    color: #282c34;
+}
+
+
+.padding    {
+    margin-top: 50px;
+}
+.rex {
+    background-color: #131D47;
+    font-family: rexFont;
+    font-weight: bolder;
+    color: #F1F1F1
+}
+
+.rexFontWhite    {
+    font-family: rexFont;
+    font-weight: bolder;
+    color: #F1F1F1
+}
+.rexFontBlack {
+    font-family: rexFont;
+    font-weight: bolder;
+    color: #F1F1F1
+}
+
+.collapsible {
+    background-color: #9AECED;
+    color: #282c34;
+    cursor: pointer;
+    padding: 4px;
+    margin-top: 10px;
+    width: 30%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 12px;
+}
+.active, .collapsible:hover {
+    background-color: #ccc;
+}
+
+.content {
+    padding: 0 18px;
+    display: none;
+    overflow: hidden;
+    color: #f1f1f1;
+    font-family: rexFont;
+    font-weight: bolder;
+}
