@@ -2,8 +2,8 @@ from flask import Flask, request, send_file, Response, make_response
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
-import database
-db = database.Database()
+#import database
+#db = database.Database()
 
 import analysis
 
@@ -54,8 +54,8 @@ def process_phone_data_thread():
 
                 print(data[message])
 
-                data["score"] = predictor.predict(data["message"])
-                db.addText(username, data)
+                #data["score"] = predictor.predict(data["message"])
+                #db.addText(username, data)
 
             phone_data_queue_lock.acquire()
 
@@ -97,42 +97,42 @@ def get_user_stats(username):
         return json.dumps(output), 200, {"ContentType": "application/json"}
 
 
-graph_funcs = {
-    "24hours": analysis.graph24hours,
-    "ratio": analysis.graphRatio,
-    "30days": analysis.graph30days
-}
+# graph_funcs = {
+#     "24hours": analysis.graph24hours,
+#     "ratio": analysis.graphRatio,
+#     "30days": analysis.graph30days
+# }
 
-@app.route("/graph/24hours/<string:size>/<string:username>")
-def get_graph_24hours(size, username):
-    return get_graph(size, username, "24hours")
+# @app.route("/graph/24hours/<string:size>/<string:username>")
+# def get_graph_24hours(size, username):
+#     return get_graph(size, username, "24hours")
+#
+# @app.route("/graph/ratio/<string:size>/<string:username>")
+# def get_graph_ratio(size, username):
+#     return get_graph(size, username, "ratio")
+#
+# @app.route("/graph/30days/<string:size>/<string:username>")
+# def get_graph_30days(size, username):
+#     return get_graph(size, username, "30days")
 
-@app.route("/graph/ratio/<string:size>/<string:username>")
-def get_graph_ratio(size, username):
-    return get_graph(size, username, "ratio")
-
-@app.route("/graph/30days/<string:size>/<string:username>")
-def get_graph_30days(size, username):
-    return get_graph(size, username, "30days")
-
-def get_graph(size, username, graph):
-    if request.method == "GET":
-        texts = db.getTexts(username)
-        if graph in graph_funcs.keys():
-            if graph == "24hours" or graph == "ratio":
-                texts = analysis.filter24hours(texts)
-            else:
-                texts = analysis.filter30days(texts)
-
-            stats = analysis.messageStats(texts)
-            print(texts[:4])
-
-            if len(texts) > 0:
-                output = analysis.generateGraph(graph_funcs[graph], texts, stats, size == "small")
-                return send_file(output, mimetype="image/png")
-
-            else:
-                print("NO TEXTS")
+# def get_graph(size, username, graph):
+#     if request.method == "GET":
+#         texts = db.getTexts(username)
+#         if graph in graph_funcs.keys():
+#             if graph == "24hours" or graph == "ratio":
+#                 texts = analysis.filter24hours(texts)
+#             else:
+#                 texts = analysis.filter30days(texts)
+#
+#             stats = analysis.messageStats(texts)
+#             print(texts[:4])
+#
+#             if len(texts) > 0:
+#                 output = analysis.generateGraph(graph_funcs[graph], texts, stats, size == "small")
+#                 return send_file(output, mimetype="image/png")
+#
+#             else:
+#                 print("NO TEXTS")
 
 
 if __name__ == "__main__":
