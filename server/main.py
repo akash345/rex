@@ -1,18 +1,14 @@
-from flask import Flask, request, send_file, Response, make_response
+from flask import Flask, request, send_file, Response, make_response,jsonify
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 #import database
 #db = database.Database()
 
-import analysis
-
-import ml
-predictor = ml.Predictor()
-
 import json
 import os
 import threading
+import logging
 
 ROOT_DIR = "/tf/HackDuke2019"
 FRONTEND_DIR = os.path.join(ROOT_DIR, "rex")
@@ -20,7 +16,10 @@ FRONTEND_DIR = os.path.join(ROOT_DIR, "rex")
 
 @app.route("/")
 def main():
-    return send_file(os.path.join(FRONTEND_DIR, "index.html"))
+    logging.basicConfig(level=logging.DEBUG)
+    app.logger.error("Here is the data")
+    return "Hello World!"
+    #return send_file(os.path.join(FRONTEND_DIR, "index.html"))
 
 
 @app.route("/<path:frontend_resource>", methods=["GET"])
@@ -59,42 +58,52 @@ def process_phone_data_thread():
 
             phone_data_queue_lock.acquire()
 
+@app.route('/api/echo-json', methods=['GET', 'POST'])
+def add():
+    data = request.get_json()
+    user = data['user']
+    message = data['message']
+    app.logger.error("Here is the data")
+    app.logger.error(user)
+    return '''<h1> The user is {}
+                   The message is {}</h1>'''.format(user,message)
+    #return jsonify(data = 12)
 
-@app.route("/phone_data/<string:username>", methods=["GET", "POST"])
-def post_phone_data(username):
-    if request.method == "POST":
-        data = request.json
-
-        with phone_data_queue_condition:
-            phone_data_queue.append((username, data))
-            phone_data_queue_condition.notify_all()
-
-        return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
-
-    elif request.method == "GET":
-        output = db.getTexts(username)
-        output = analysis.filter24hours(output)
-        return json.dumps(output), 200, {"ContentType": "application/json"}
-
-
-@app.route("/add_user", methods=["POST"])
-def post_add_user():
-    if request.method == "POST":
-        data = request.json
-        db.addUser(data["username"], "randomsalt", 2834792835)
-        return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
-
-
-@app.route("/user_stats/<string:username>", methods=["GET"])
-def get_user_stats(username):
-    if request.method == "GET":
-        texts = db.getTexts(username)
-        filtered = analysis.filter24hours(texts)
-        if len(filtered) > 0:
-            output = analysis.messageStats(filtered)
-        else:
-            output = {}
-        return json.dumps(output), 200, {"ContentType": "application/json"}
+# @app.route("/phone_data/<string:username>", methods=["GET", "POST"])
+# def post_phone_data(username):
+#     if request.method == "POST":
+#         data = request.json
+#
+#         with phone_data_queue_condition:
+#             phone_data_queue.append((username, data))
+#             phone_data_queue_condition.notify_all()
+#
+#         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
+#
+#     elif request.method == "GET":
+#         output = db.getTexts(username)
+#         output = analysis.filter24hours(output)
+#         return json.dumps(output), 200, {"ContentType": "application/json"}
+#
+#
+# @app.route("/add_user", methods=["POST"])
+# def post_add_user():
+#     if request.method == "POST":
+#         data = request.json
+#         db.addUser(data["username"], "randomsalt", 2834792835)
+#         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
+#
+#
+# @app.route("/user_stats/<string:username>", methods=["GET"])
+# def get_user_stats(username):
+#     if request.method == "GET":
+#         texts = db.getTexts(username)
+#         filtered = analysis.filter24hours(texts)
+#         if len(filtered) > 0:
+#             output = analysis.messageStats(filtered)
+#         else:
+#             output = {}
+#         return json.dumps(output), 200, {"ContentType": "application/json"}
 
 
 # graph_funcs = {
@@ -137,4 +146,4 @@ def get_user_stats(username):
 
 if __name__ == "__main__":
     threading.Thread(name="phone_data_queue", target=process_phone_data_thread).start()
-    app.run(host="0.0.0.0", port="5000")
+    app.run(host="127.0.0.1", port="5000")
