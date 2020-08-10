@@ -1,4 +1,5 @@
 from flask import Flask, request, send_file, Response, make_response,jsonify
+from send_sms import send_sms
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
@@ -17,7 +18,6 @@ FRONTEND_DIR = os.path.join(ROOT_DIR, "rex")
 @app.route("/")
 def main():
     logging.basicConfig(level=logging.DEBUG)
-    app.logger.error("Here is the data")
     return "Hello World!"
     #return send_file(os.path.join(FRONTEND_DIR, "index.html"))
 
@@ -63,6 +63,7 @@ def add():
     data = request.get_json()
     user = data['user']
     message = data['message']
+    send_sms(1,message)
     app.logger.error("Here is the data")
     app.logger.error(user)
     return '''<h1> The user is {}
