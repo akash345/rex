@@ -1,56 +1,53 @@
 from flask import Flask, request, send_file, Response, make_response,jsonify
 from flask_sqlalchemy import SQLAlchemy
+from server import app,db
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import SQLAlchemyError
 from friend import *
 import json
 import os
 import threading
 import logging
-import pyrebase
+import random
 
 
 
-app = Flask(__name__)
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///myDB.db'
-db = SQLAlchemy(app)
-
-#import database
-#db = database.Database()
-
-
-firebaseConfig = {
-    apiKey: "AIzaSyDhfdtCS_cZgyovvU2Y61L8XdCek7PJPP8",
-    authDomain: "rex-app-3ecc6.firebaseapp.com",
-    databaseURL: "https://rex-app-3ecc6.firebaseio.com",
-    projectId: "rex-app-3ecc6",
-    storageBucket: "rex-app-3ecc6.appspot.com",
-    messagingSenderId: "302593286147",
-    appId: "1:302593286147:web:0cc546bdb2a0fff029ae36",
-    measurementId: "G-MD166Z3B63"
-}
-
-firebase = pyrebase.initialize_app(config)
-db = firebase.database()
-
-ROOT_DIR = "/tf/HackDuke2019"
-FRONTEND_DIR = os.path.join(ROOT_DIR, "rex")
-
-class rexUser(db.Model):
+class user(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    friends = db.Column(ARRAY(Friend))
+    friend1 = db.Column(db.String(50), unique=True)
 
+    def __init__(self, id, friend1 = "huh"):
+        self.id = id
+        self.friend1 = friend1
 
 @app.route("/")
 def main():
     logging.basicConfig(level=logging.DEBUG)
-    test_friend = Friend("Vik", 3)
-    friends = [test_friend]
-    rex_test = rexUser(id = 87432)
-    app.logger.error(rex_test.id)
-    return "Hello World!"
+    # test_friend = Friend("Vik", 3)
+    # friends = [test_friend]
+    #b2 = Book(id = 533, title = "The Stranger", author_name = "Albert", author_surname = "Camus", month = "April", year = 2019)
+    # db.session.add(b2)
+    rex_test = user(random.randint(0, 2000), "vik")
+    app.logger.error(rex_test.friend1)
+    db.session.add(rex_test)
+    try:
+        db.session.commit()
+        app.logger.error("Successfully Committed ")
+        app.logger.error(user.query.all())
+    except:
+        db.session.rollback()
+        app.logger.error("failed")
+    return "hey"
 
     #return send_file(os.path.join(FRONTEND_DIR, "index.html"))
 
+@app.route("/display")
+def show_database():
+    databaseView = "Database View:\n"
+    for key in user.query.all():
+        databaseView = databaseView + "Entry: " + str(key.id) + key.friend1 + '\n'
+    return databaseView
 
 @app.route('/api/echo-json', methods=['GET', 'POST'])
 def add():
@@ -61,11 +58,13 @@ def add():
     app.logger.error(user)
     return '''<h1> The user is {}
                    The message is {}</h1>'''.format(user,message)
-    #return jsonify(data = 12)
+
+def clearDatabase ():
+    db.session.query(user).delete()
+    db.session.commit()
 
 
 
 if __name__ == "__main__":
-    db.create_all()
-    threading.Thread(name="phone_data_queue", target=process_phone_data_thread).start()
+    #db.create_all()
     app.run(host="127.0.0.1", port="5000")
