@@ -1,150 +1,71 @@
 from flask import Flask, request, send_file, Response, make_response,jsonify
-from send_sms import send_sms
-app = Flask(__name__)
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-
-#import database
-#db = database.Database()
-
+from flask_sqlalchemy import SQLAlchemy
+from friend import *
 import json
 import os
 import threading
 import logging
+import pyrebase
+
+
+
+app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///myDB.db'
+db = SQLAlchemy(app)
+
+#import database
+#db = database.Database()
+
+
+firebaseConfig = {
+    apiKey: "AIzaSyDhfdtCS_cZgyovvU2Y61L8XdCek7PJPP8",
+    authDomain: "rex-app-3ecc6.firebaseapp.com",
+    databaseURL: "https://rex-app-3ecc6.firebaseio.com",
+    projectId: "rex-app-3ecc6",
+    storageBucket: "rex-app-3ecc6.appspot.com",
+    messagingSenderId: "302593286147",
+    appId: "1:302593286147:web:0cc546bdb2a0fff029ae36",
+    measurementId: "G-MD166Z3B63"
+}
+
+firebase = pyrebase.initialize_app(config)
+db = firebase.database()
 
 ROOT_DIR = "/tf/HackDuke2019"
 FRONTEND_DIR = os.path.join(ROOT_DIR, "rex")
+
+class rexUser(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    friends = db.Column(ARRAY(Friend))
 
 
 @app.route("/")
 def main():
     logging.basicConfig(level=logging.DEBUG)
+    test_friend = Friend("Vik", 3)
+    friends = [test_friend]
+    rex_test = rexUser(id = 87432)
+    app.logger.error(rex_test.id)
     return "Hello World!"
+
     #return send_file(os.path.join(FRONTEND_DIR, "index.html"))
 
-
-@app.route("/<path:frontend_resource>", methods=["GET"])
-def thing(frontend_resource):
-
-    if request.method == "GET":
-        resource_path = os.path.join(FRONTEND_DIR, frontend_resource)
-        if os.path.exists(resource_path):
-            return send_file(resource_path)
-
-
-phone_data_queue = []
-phone_data_queue_lock = threading.Lock()
-phone_data_queue_condition = threading.Condition(phone_data_queue_lock)
-def process_phone_data_thread():
-
-    while True:
-
-        # Condition is triggered whenever the queue has new data
-        with phone_data_queue_condition:
-
-            # Wait for new data
-            phone_data_queue_condition.wait()
-
-            phone_data_queue_lock.release()
-            while len(phone_data_queue) > 0:
-
-                phone_data_queue_lock.acquire()
-                username, data = phone_data_queue.pop(0)
-                phone_data_queue_lock.release()
-
-                print(data[message])
-
-                #data["score"] = predictor.predict(data["message"])
-                #db.addText(username, data)
-
-            phone_data_queue_lock.acquire()
 
 @app.route('/api/echo-json', methods=['GET', 'POST'])
 def add():
     data = request.get_json()
     user = data['user']
     message = data['message']
-    send_sms(1,message)
     app.logger.error("Here is the data")
     app.logger.error(user)
     return '''<h1> The user is {}
                    The message is {}</h1>'''.format(user,message)
     #return jsonify(data = 12)
 
-# @app.route("/phone_data/<string:username>", methods=["GET", "POST"])
-# def post_phone_data(username):
-#     if request.method == "POST":
-#         data = request.json
-#
-#         with phone_data_queue_condition:
-#             phone_data_queue.append((username, data))
-#             phone_data_queue_condition.notify_all()
-#
-#         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
-#
-#     elif request.method == "GET":
-#         output = db.getTexts(username)
-#         output = analysis.filter24hours(output)
-#         return json.dumps(output), 200, {"ContentType": "application/json"}
-#
-#
-# @app.route("/add_user", methods=["POST"])
-# def post_add_user():
-#     if request.method == "POST":
-#         data = request.json
-#         db.addUser(data["username"], "randomsalt", 2834792835)
-#         return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
-#
-#
-# @app.route("/user_stats/<string:username>", methods=["GET"])
-# def get_user_stats(username):
-#     if request.method == "GET":
-#         texts = db.getTexts(username)
-#         filtered = analysis.filter24hours(texts)
-#         if len(filtered) > 0:
-#             output = analysis.messageStats(filtered)
-#         else:
-#             output = {}
-#         return json.dumps(output), 200, {"ContentType": "application/json"}
-
-
-# graph_funcs = {
-#     "24hours": analysis.graph24hours,
-#     "ratio": analysis.graphRatio,
-#     "30days": analysis.graph30days
-# }
-
-# @app.route("/graph/24hours/<string:size>/<string:username>")
-# def get_graph_24hours(size, username):
-#     return get_graph(size, username, "24hours")
-#
-# @app.route("/graph/ratio/<string:size>/<string:username>")
-# def get_graph_ratio(size, username):
-#     return get_graph(size, username, "ratio")
-#
-# @app.route("/graph/30days/<string:size>/<string:username>")
-# def get_graph_30days(size, username):
-#     return get_graph(size, username, "30days")
-
-# def get_graph(size, username, graph):
-#     if request.method == "GET":
-#         texts = db.getTexts(username)
-#         if graph in graph_funcs.keys():
-#             if graph == "24hours" or graph == "ratio":
-#                 texts = analysis.filter24hours(texts)
-#             else:
-#                 texts = analysis.filter30days(texts)
-#
-#             stats = analysis.messageStats(texts)
-#             print(texts[:4])
-#
-#             if len(texts) > 0:
-#                 output = analysis.generateGraph(graph_funcs[graph], texts, stats, size == "small")
-#                 return send_file(output, mimetype="image/png")
-#
-#             else:
-#                 print("NO TEXTS")
 
 
 if __name__ == "__main__":
+    db.create_all()
     threading.Thread(name="phone_data_queue", target=process_phone_data_thread).start()
     app.run(host="127.0.0.1", port="5000")
