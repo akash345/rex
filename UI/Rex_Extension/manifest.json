@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt+xsFpJ3/xUuPQP/G4ZRPEjPZpOYVtRoxhvtIh41gCdb595/nALHnEgSaMkrA/93rGzYFvZo/DXEfh1Og7j4FqGruCN/E/dorXPnekpY7kQVqpzE9+38vRAg1yGIOAcA3nL5wqalg1KIt2B8NA1Hn+8D+sYjGKlB72JtgvGaOZ+6m6J5Dvhw46j/WwUrfd7LSXR6cP9YNRxe9z1OsT9Z+XZfiokpWMxW3qbW6Wmu1z+QOHRVCslvtHCr8aMMHe6iNwXTtmsP/W3GR9ea9s8y6mfP5vPBXLNRsJWypq7Ctx95D3xEHHZb5sG7oDEl0UAZNtpkCQHNMqyqAzp05qgwjQIDAQAB",d
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt+xsFpJ3/xUuPQP/G4ZRPEjPZpOYVtRoxhvtIh41gCdb595/nALHnEgSaMkrA/93rGzYFvZo/DXEfh1Og7j4FqGruCN/E/dorXPnekpY7kQVqpzE9+38vRAg1yGIOAcA3nL5wqalg1KIt2B8NA1Hn+8D+sYjGKlB72JtgvGaOZ+6m6J5Dvhw46j/WwUrfd7LSXR6cP9YNRxe9z1OsT9Z+XZfiokpWMxW3qbW6Wmu1z+QOHRVCslvtHCr8aMMHe6iNwXTtmsP/W3GR9ea9s8y6mfP5vPBXLNRsJWypq7Ctx95D3xEHHZb5sG7oDEl0UAZNtpkCQHNMqyqAzp05qgwjQIDAQAB",
   "name": "Rex",
   "description": "Get feedback from your friends on online purchases using Rex",
   "version": "0.0.1",

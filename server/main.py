@@ -15,7 +15,7 @@ import random
 
 class user(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    friend1 = db.Column(db.String(50), unique=True)
+    friend1 = db.Column(db.String(50), unique=False)
 
     def __init__(self, id, friend1 = "huh"):
         self.id = id
@@ -23,6 +23,7 @@ class user(db.Model):
 
 @app.route("/")
 def main():
+    #db.create_all()
     logging.basicConfig(level=logging.DEBUG)
     # test_friend = Friend("Vik", 3)
     # friends = [test_friend]
@@ -66,5 +67,4 @@ def clearDatabase ():
 
 
 if __name__ == "__main__":
-    #db.create_all()
     app.run(host="127.0.0.1", port="5000")
