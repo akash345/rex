@@ -15,7 +15,7 @@ import random
 
 class user(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    friend1 = db.Column(db.String(50), unique=False)
+    friends = db.Column(db.String(1000), unique=False)
 
     def __init__(self, id, friend1 = "huh"):
         self.id = id
@@ -23,12 +23,10 @@ class user(db.Model):
 
 @app.route("/")
 def main():
+    #enable this to recreate the db after destroying it
+    #clearDatabase()
     #db.create_all()
     logging.basicConfig(level=logging.DEBUG)
-    # test_friend = Friend("Vik", 3)
-    # friends = [test_friend]
-    #b2 = Book(id = 533, title = "The Stranger", author_name = "Albert", author_surname = "Camus", month = "April", year = 2019)
-    # db.session.add(b2)
     rex_test = user(random.randint(0, 2000), "vik")
     app.logger.error(rex_test.friend1)
     db.session.add(rex_test)
@@ -41,7 +39,6 @@ def main():
         app.logger.error("failed")
     return "hey"
 
-    #return send_file(os.path.join(FRONTEND_DIR, "index.html"))
 
 @app.route("/display")
 def show_database():
@@ -60,9 +57,37 @@ def add():
     return '''<h1> The user is {}
                    The message is {}</h1>'''.format(user,message)
 
+@app.route('/user_validation', methods=['GET', 'POST'])
+def getUserData():
+    data = request.get_json()
+    username = data['user']
+    user_data = user.query.get(data['user'])
+    if(user_data is not None) :
+        app.logger.error("Found User Data")
+        return extractJSONFromFriends(user_data.friends)
+    else:
+        app.logger.error("User Not Found")
+        return jsonify("nullresponse" = "True")
+
 def clearDatabase ():
     db.session.query(user).delete()
     db.session.commit()
+
+#Converts String Friends Data to JSON
+def extractJSONFromFriends(friends) :
+    friends_list = friends.split
+    max_friends = 5
+    #max_friends * 2 to include phone number
+    while (len(friends_list) < max_friends*2):
+        #0 will be the common null between js and server
+        friends_list.append(0)
+    friend_dict = {}
+    friendIter = 0
+    for x in range(0, len(friends_list), 2):
+        friendIter += 1
+        friend_dict['friend' + friendIter] = friends_list[x]
+        friend_dict['friend' + friendIter + "num"] = friends_list[x+1]
+    return json.dumps(friend_dict)
 
 
 
