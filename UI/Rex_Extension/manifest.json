@@ -16,7 +16,8 @@
   "permissions": [
     "tabs",
     "http://127.0.0.1:5000/api/echo-json",
-    "identity"
+    "identity",
+    "storage"
   ],
   "background": {
     "scripts": ["app/background.js"]
