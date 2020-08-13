@@ -29,7 +29,6 @@
 
   //Send JSON function
   function sendMessageViaJSON(method, url, data){
-    alert("started sending");
     var xhr = new XMLHttpRequest();
     xhr.open(method, url, true);
     xhr.setRequestHeader("Content-Type", "application/json");
@@ -40,7 +39,6 @@
         }
     };
     xhr.send(data);
-    alert("finshed sending");
     }
 
 let butts = document.getElementsByClassName("button");
