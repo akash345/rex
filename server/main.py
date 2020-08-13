@@ -64,6 +64,12 @@ def sendMessage():
     app.logger.error(data)
     phone_num = data["phone_num"]
     url = data['URL']
+    #ONCE TWILIO IS WORKING
+    #send_sms(phone_num, "Check this out" + url)
+
+    #Hardcode testing
+    send_sms(6789069312, "hey")
+    
     app.logger.error("Phone Num:" + phone_num)
     app.logger.error("URL" + url)
     return '''<h1> The user is {}
@@ -74,7 +80,6 @@ def getUserData():
     data = request.get_json()
     username = data['user']
     user_data = user.query.get(data['user'])
-    send_sms(6789069312, "hey")
     if(user_data is not None) :
         app.logger.error("Found User Data")
         return extractJSONFromFriends(user_data.friends)
