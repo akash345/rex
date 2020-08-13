@@ -68,7 +68,7 @@ def sendMessage():
     #send_sms(phone_num, "Check this out" + url)
 
     #Hardcode testing
-    send_sms(6789069312, "hey")
+    send_sms(6785751485, "hey")
     
     app.logger.error("Phone Num:" + phone_num)
     app.logger.error("URL" + url)
