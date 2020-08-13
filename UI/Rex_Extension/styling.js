@@ -49,6 +49,7 @@ for (i = 0; i < butts.length; i++) {
     butts[i].addEventListener("click", fun);
 }
 
+
 function fun() {
 
     const user = {
@@ -97,6 +98,6 @@ function fun() {
 
 //begin button
 document.getElementById("beginbutton").addEventListener("click",function(){
-    
+
 
 })

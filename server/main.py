@@ -17,18 +17,18 @@ class user(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     friends = db.Column(db.String(1000), unique=False)
 
-    def __init__(self, id, friend1 = "huh"):
+    def __init__(self, id, friends = "huh"):
         self.id = id
-        self.friend1 = friend1
+        self.friends = friends
 
 @app.route("/")
 def main():
     #enable this to recreate the db after destroying it
     #clearDatabase()
-    #db.create_all()
+    db.create_all()
     logging.basicConfig(level=logging.DEBUG)
     rex_test = user(random.randint(0, 2000), "vik")
-    app.logger.error(rex_test.friend1)
+    app.logger.error(rex_test.friends)
     db.session.add(rex_test)
     try:
         db.session.commit()
@@ -44,7 +44,7 @@ def main():
 def show_database():
     databaseView = "Database View:\n"
     for key in user.query.all():
-        databaseView = databaseView + "Entry: " + str(key.id) + key.friend1 + '\n'
+        databaseView = databaseView + "Entry: " + str(key.id) + key.friends + '\n'
     return databaseView
 
 @app.route('/api/echo-json', methods=['GET', 'POST'])
@@ -67,7 +67,7 @@ def getUserData():
         return extractJSONFromFriends(user_data.friends)
     else:
         app.logger.error("User Not Found")
-        return jsonify("nullresponse" = "True")
+        return jsonify(is_null_response = "yes")
 
 def clearDatabase ():
     db.session.query(user).delete()
