@@ -5,6 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 from friend import *
+from send_sms.py import send_sms
 import json
 import os
 import threading
@@ -47,31 +48,33 @@ def show_database():
         databaseView = databaseView + "Entry: " + str(key.id) + key.friends + '\n'
     return databaseView
 
-# @app.route('/api/echo-json', methods=['GET', 'POST'])
-# def add():
-#     data = request.get_json()
-#     user = data['user']
-#     message = data['message']
-#     app.logger.error("Here is the data")
-#     app.logger.error(user)
-#     return '''<h1> The user is {}
-#                    The message is {}</h1>'''.format(user,message)
+@app.route('/api/echo-json', methods=['GET', 'POST'])
+def add():
+    data = request.get_json()
+    user = data['user']
+    message = data['message']
+    app.logger.error("Here is the data")
+    app.logger.error(user)
+    return '''<h1> The user is {}
+                   The message is {}</h1>'''.format(user,message)
 
-@app.route('/send_message', methods=['GET', 'POST'])
+@app.route('/api/send-message', methods=['GET', 'POST'])
 def sendMessage():
     data = request.get_json()
-    phone_num = data['phone_num']
-    url = data['url']
+    app.logger.error(data)
+    phone_num = data["phone_num"]
+    url = data['URL']
     app.logger.error("Phone Num:" + phone_num)
     app.logger.error("URL" + url)
     return '''<h1> The user is {}
-                   The message is {}</h1>'''.format(user,message)
+                   The message is {}</h1>'''.format(phone_num,url)
 
 @app.route('/user_validation', methods=['GET', 'POST'])
 def getUserData():
     data = request.get_json()
     username = data['user']
     user_data = user.query.get(data['user'])
+    send_sms(6789069312, "hey")
     if(user_data is not None) :
         app.logger.error("Found User Data")
         return extractJSONFromFriends(user_data.friends)
