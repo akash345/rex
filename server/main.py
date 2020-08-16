@@ -1,11 +1,11 @@
 from flask import Flask, request, send_file, Response, make_response,jsonify
+from twilio.rest import Client
 from flask_sqlalchemy import SQLAlchemy
 from server import app,db
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
 from friend import *
-from send_sms.py import send_sms
 import json
 import os
 import threading
@@ -23,7 +23,7 @@ import random
 #         self.friends = friends
 
 @app.route("/")
-def main():
+def front():
     #enable this to recreate the db after destroying it
     #clearDatabase()
     # db.create_all()
@@ -38,6 +38,8 @@ def main():
     # except:
     #     db.session.rollback()
     #     app.logger.error("failed")
+    # send_sms(6789069312, "test test")
+    #send_sms(6789069312, 'cmon')
     return "hey"
 
 
@@ -64,12 +66,9 @@ def sendMessage():
     app.logger.error(data)
     phone_num = data["phone_num"]
     url = data['URL']
-    #ONCE TWILIO IS WORKING
-    #send_sms(phone_num, "Check this out" + url)
 
-    #Hardcode testing
-    send_sms(6785751485, "hey")
-    
+    send_sms(phone_num, "Check out this product I'm looking at: " + url)
+
     app.logger.error("Phone Num:" + phone_num)
     app.logger.error("URL" + url)
     return '''<h1> The user is {}
@@ -106,6 +105,34 @@ def extractJSONFromFriends(friends) :
         friend_dict['friend' + friendIter] = friends_list[x]
         friend_dict['friend' + friendIter + "num"] = friends_list[x+1]
     return json.dumps(friend_dict)
+
+def send_sms(phone_number, message):
+    # account_sid = os.environ['TWILIO_ACCOUNT_SID']
+    # auth_token = os.environ['TWILIO_AUTH_TOKEN']
+    account_sid = "AC8765801a6f4501d32f3d6a2bc28e31cd"
+    auth_token = '9f76c3dfba1903404758653885f1ff77'
+    client = Client(account_sid, auth_token)
+
+    #numbers_to_message = ['+16789069312']
+    numbers_to_message = []
+    numbers_to_message.append(number_to_twilio_num(phone_number))
+    print(numbers_to_message[0])
+    for number in numbers_to_message:
+        message = client.messages \
+            .create(
+             body=message,
+             messaging_service_sid='MG6e4ba6a146973fb1e9d54ca3e0037141',
+             to= number
+         )
+    print(message.sid)
+
+#Takes in a US Number like "6785751485" and converts it to a Twilio compat num
+def number_to_twilio_num(phone_number):
+    twilio_num = str(phone_number)
+    return "+1" + twilio_num
+
+send_sms(6789069312, 'hey')
+
 
 
 
