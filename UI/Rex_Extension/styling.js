@@ -67,7 +67,7 @@ function fun() {
         firstname : document.getElementById("contact3FirstName").value,
         lastname : document.getElementById("contact3LastName").value,
         phone : document.getElementById("contact3Phone").value,
-    }]
+    }].filter(contact=>(contact.firstname + contact.lastname).trim().length > 0)
     console.log(user)
     console.log(contacts)
     chrome.storage.sync.set({user:JSON.stringify(user)},function(){console.log("userinfo stored")})

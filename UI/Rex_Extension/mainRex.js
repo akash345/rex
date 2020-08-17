@@ -23,7 +23,11 @@ function listContacts(){
           <div class="ui basic teal button" id="butt${index}">Send</div>
         </div>
         <img class="ui avatar image" src="user.jpg">
-        <div class="content" id=friend1>
+        <div class="content" id="friend${index}" style="
+        white-space: nowrap; 
+        width: 130px; 
+        overflow: hidden;
+        text-overflow: ellipsis; " >
         ${contact.firstname} ${contact.lastname}
         </div>`
         contactList.appendChild(para);
