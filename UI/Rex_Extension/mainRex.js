@@ -16,12 +16,11 @@ chrome.storage.sync.get(["contact1", "contact2" , "contact3"], function (result)
       //async call for url
       chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
           let url = tabs[0].url;
-          for (i = 0; i < phone_nums.length; i++) {
-              var data = JSON.stringify({"phone_num" :  "num", "URL" : url});
-              sendButtons[i].addEventListener("click", function() {
-                sendMessageViaJSON("POST", data)
-              });
-          }
+          phone_nums.map(function(phone, index){
+            sendButtons[index].addEventListener("click", function() {
+              sendMessageViaJSON("POST", JSON.stringify({"phone_num" :  phone, "URL" : url}))
+            });
+          })
       });
 
       //Essentailly hardcoding 3 here until we cleanup UI
