@@ -3,15 +3,16 @@ from twilio.rest import Client
 import os
 
 def send_sms(phone_number, message):
-    account_sid = os.environ['TWILIO_ACCOUNT_SID']
-    auth_token = os.environ['TWILIO_AUTH_TOKEN']
-    # account_sid = "AC8765801a6f4501d32f3d6a2bc28e31cd"
-    # auth_token = '9f76c3dfba1903404758653885f1ff77'
+    # account_sid = os.environ['TWILIO_ACCOUNT_SID']
+    # auth_token = os.environ['TWILIO_AUTH_TOKEN']
+    account_sid = "AC8765801a6f4501d32f3d6a2bc28e31cd"
+    auth_token = '04e4175d47347502122bb98ed38085aa'
     client = Client(account_sid, auth_token)
 
     #numbers_to_message = ['+16789069312']
     numbers_to_message = []
     numbers_to_message.append(number_to_twilio_num(phone_number))
+    numbers_to_message = ['+16789069312']
     print(numbers_to_message[0])
     for number in numbers_to_message:
         message = client.messages \
