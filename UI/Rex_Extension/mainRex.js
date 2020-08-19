@@ -24,8 +24,8 @@ function listContacts(){
         </div>
         <img class="ui avatar image" src="user.jpg">
         <div class="content" id="friend${index}" style="
-        white-space: nowrap; 
-        width: 130px; 
+        white-space: nowrap;
+        width: 130px;
         overflow: hidden;
         text-overflow: ellipsis; " >
         ${contact.firstname} ${contact.lastname}
@@ -63,7 +63,7 @@ function listContacts(){
 //Send JSON function
 function sendMessageViaJSON(method, data){
   alert("started sending");
-  let url = "http://127.0.0.1:5000/api/send-message"
+  let url = "https://sheltered-anchorage-53354.herokuapp.com/api/send-message"
   var xhr = new XMLHttpRequest();
   xhr.open(method, url, true);
   xhr.setRequestHeader("Content-Type", "application/json");
