@@ -77,12 +77,6 @@ function fun() {
     });
 
 
-
-
-    let text = document.createElement("div");
-    text.className = "ui small label";
-    text.innerHTML = "Sent";
-    this.parentNode.replaceChild(text, this);
     var data = JSON.stringify({"user" : "Vikram", "message": "message"});
     let url = "http://127.0.0.1:5000/api/echo-json"
     sendMessageViaJSON("POST", url, data);

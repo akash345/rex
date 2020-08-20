@@ -33,6 +33,10 @@ function listContacts(){
         contactList.appendChild(para);
         document.getElementById(`butt${index}`).addEventListener("click", function() {
           sendMessageViaJSON("POST", JSON.stringify({"phone_num" :  contact.phone, "URL" : url}))
+          let text = document.createElement("div");
+          text.className = "ui small label";
+          text.innerHTML = "Sent";
+          this.parentNode.replaceChild(text, this);
         });
       });
     })
@@ -60,6 +64,7 @@ function listContacts(){
     //Essentailly hardcoding 3 here until we cleanup UI
 });
 }
+
 //Send JSON function
 function sendMessageViaJSON(method, data){
   alert("started sending");
