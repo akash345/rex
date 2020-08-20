@@ -20,7 +20,7 @@ function listContacts(){
         para.classList.add("item")
         para.innerHTML=`
         <div class="right floated content">
-          <div class="ui basic teal button" id="butt${index}">Send</div>
+          <div class="ui basic teal button" id="butt${index}">Rex</div>
         </div>
         <img class="ui avatar image" src="user.jpg">
         <div class="content" id="friend${index}" style="
