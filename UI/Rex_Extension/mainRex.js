@@ -2,7 +2,13 @@
 var friend1 = document.getElementById("friend1");
 listContacts()
 function listContacts(){
-  chrome.storage.sync.get(["contacts"], function (result) {
+  chrome.storage.sync.get(["contacts", "sentCount"], function (result) {
+    //fetch sent Count
+    const sentCount = document.getElementById("sentCount")
+    sentCount.innerHTML = "0"
+    if (result.sentCount) sentCount.innerHTML = result.sentCount
+
+    //build contact list
     const contacts = JSON.parse(result.contacts);
     console.log(contacts)
     const contactList = document.getElementById("contactlist")
@@ -32,7 +38,8 @@ function listContacts(){
         </div>`
         contactList.appendChild(para);
         document.getElementById(`butt${index}`).addEventListener("click", function() {
-          sendMessageViaJSON("POST", JSON.stringify({"phone_num" :  contact.phone, "URL" : url}))
+          addSentCount()
+          sendMessageViaJSON("POST", {"phone_num" :  contact.phone, "URL" : url})
           let text = document.createElement("div");
           text.className = "ui small label";
           text.innerHTML = "Sent";
@@ -72,10 +79,27 @@ function sendMessageViaJSON(method, data){
   var xhr = new XMLHttpRequest();
   xhr.open(method, url, true);
   xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.send(data);
+    chrome.storage.sync.get(["user"], function (result) {
+    if(result.user){
+      const currentUser = JSON.parse(result.user)
+      xhr.send(JSON.stringify({...data, username: currentUser.firstname + " " + currentUser.lastname, userphone: currentUser.phone}));
+    }else{
+      xhr.send(JSON.stringify(data));
+    }})
 //  alert("finshed sending");
-  }
-
+}
+function addSentCount(){
+  chrome.storage.sync.get(["sentCount"], function (result) {
+    if(result.sentCount){
+      const sentCount = (parseInt(result.sentCount) + 1).toString()
+      chrome.storage.sync.set({sentCount:sentCount},function(){console.log("sentCount updated")})
+      document.getElementById("sentCount").innerHTML = sentCount
+    }else{
+      chrome.storage.sync.set({sentCount:"1"},function(){console.log("sentCount updated")})
+      document.getElementById("sentCount").innerHTML = "1"
+    }
+})
+}
 function getURL() {
   chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
       let url = tabs[0].url;
@@ -102,6 +126,7 @@ document.getElementById("addcontact").addEventListener("click",function(){
     }else{
       chrome.storage.sync.set({contacts:JSON.stringify([...JSON.parse(result.contacts), newContact])},function(){console.log("new contact stored")})
     }
+    
     listContacts()
     document.getElementById("addfirstname").value = ""
     document.getElementById("addlastname").value = ""
