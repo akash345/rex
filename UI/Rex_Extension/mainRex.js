@@ -22,7 +22,7 @@ function listContacts(){
         <div class="right floated content">
           <div class="ui basic teal button" id="butt${index}">Rex</div>
         </div>
-        <img class="ui avatar image" src="user.jpg">
+        <img class="ui avatar image" src="images/user.jpg">
         <div class="content" id="friend${index}" style="
         white-space: nowrap;
         width: 130px;
@@ -67,13 +67,13 @@ function listContacts(){
 
 //Send JSON function
 function sendMessageViaJSON(method, data){
-  alert("started sending");
+//  alert("started sending");
   let url = "https://sheltered-anchorage-53354.herokuapp.com/api/send-message"
   var xhr = new XMLHttpRequest();
   xhr.open(method, url, true);
   xhr.setRequestHeader("Content-Type", "application/json");
   xhr.send(data);
-  alert("finshed sending");
+//  alert("finshed sending");
   }
 
 function getURL() {
@@ -109,3 +109,14 @@ document.getElementById("addcontact").addEventListener("click",function(){
     document.getElementById("collapsecontent").style.display="none"
   })
 })
+//Rex Sent Functionality
+let butts = document.getElementsByClassName("button");
+let sentRex = 0;
+
+
+
+
+  var data = JSON.stringify({"user" : "Vikram", "message": "message"});
+  let url = "http://127.0.0.1:5000/api/echo-json"
+  sendMessageViaJSON("POST", url, data);
+

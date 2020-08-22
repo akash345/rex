@@ -77,6 +77,7 @@ function fun() {
     });
 
 
+
     var data = JSON.stringify({"user" : "Vikram", "message": "message"});
     let url = "http://127.0.0.1:5000/api/echo-json"
     sendMessageViaJSON("POST", url, data);
