@@ -32,7 +32,7 @@ function listContacts(){
         </div>`
         contactList.appendChild(para);
         document.getElementById(`butt${index}`).addEventListener("click", function() {
-          sendMessageViaJSON("POST", JSON.stringify({"phone_num" :  contact.phone, "URL" : url}))
+          sendMessageViaJSON("POST", {"phone_num" :  contact.phone, "URL" : url})
           let text = document.createElement("div");
           text.className = "ui small label";
           text.innerHTML = "Sent";
@@ -72,7 +72,14 @@ function sendMessageViaJSON(method, data){
   var xhr = new XMLHttpRequest();
   xhr.open(method, url, true);
   xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.send(data);
+  chrome.storage.sync.get(["user"], function (result) {
+    if(result.user){
+      const currentUser = JSON.parse(result.user)
+      xhr.send(JSON.stringify({...data, username: currentUser.firstname + " " + currentUser.lastname, userphone: currentUser.phone}));
+    }else{
+      xhr.send(JSON.stringify(data));
+    }
+  })
   alert("finshed sending");
   }
 
